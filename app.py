@@ -2,24 +2,35 @@ import os
 import random
 import re
 import sqlite3
-import google.generativeai as genai
 from datetime import datetime
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 
+# ============= GEMINI IMPORT (FIXED) =============
+try:
+    import google.generativeai as genai
+    GEMINI_AVAILABLE = True
+except ImportError:
+    GEMINI_AVAILABLE = False
+    print("⚠️ google-generativeai not installed. Install with: pip install google-generativeai")
+
 app = Flask(__name__)
-app.secret_key = 'cyber_shield_secret_key_2024'
+app.secret_key = os.environ.get('SECRET_KEY', 'cyber_shield_secret_key_2024')
 
 # ============= GEMINI API CONFIGURATION =============
-# Get FREE API key from: https://aistudio.google.com/
-GEMINI_API_KEY = "AIzaSyC8F_hMD14zz9DaE7pgUDa9wDmmyF6Ku_o"  # ✅ APNA API KEY YAHAN DALO
+# Get API key from environment variable (Render Dashboard me set karo)
+GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
 
-# Configure Gemini
-if GEMINI_API_KEY:
-    genai.configure(api_key=GEMINI_API_KEY)
-    model = genai.GenerativeModel('gemini-1.5-flash')  # Free model
-    GEMINI_AVAILABLE = True
-    print("✅ Gemini API Configured!")
+# Configure Gemini if available
+if GEMINI_AVAILABLE and GEMINI_API_KEY:
+    try:
+        genai.configure(api_key=GEMINI_API_KEY)
+        model = genai.GenerativeModel('gemini-1.5-flash')
+        GEMINI_AVAILABLE = True
+        print("✅ Gemini API Configured!")
+    except Exception as e:
+        GEMINI_AVAILABLE = False
+        print(f"⚠️ Gemini config error: {e}")
 else:
     GEMINI_AVAILABLE = False
     print("⚠️ Gemini API not configured. Using local detection only.")
@@ -48,7 +59,7 @@ init_db()
 # ============= GEMINI AI THREAT ANALYSIS =============
 def analyze_with_gemini(text):
     """Use Gemini AI to analyze threat"""
-    if not GEMINI_AVAILABLE:
+    if not GEMINI_AVAILABLE or not GEMINI_API_KEY:
         return None
     
     try:
@@ -321,10 +332,15 @@ def logout():
     return redirect(url_for('login'))
 
 if __name__ == '__main__':
+    import socket
+    hostname = socket.gethostname()
+    local_ip = socket.gethostbyname(hostname)
+    
     print("=" * 60)
-    print("🛡️ CYBER SHIELD - WITH GEMINI AI")
+    print("🛡️ CYBER SHIELD - THREAT DETECTION SYSTEM")
     print("=" * 60)
     print(f"📍 Web Dashboard: http://127.0.0.1:5000")
+    print(f"📡 Local IP: http://{local_ip}:5000")
     print("")
     print("🤖 AI Status:")
     print(f"   └─ Gemini AI: {'✅ ACTIVE' if GEMINI_AVAILABLE else '❌ Not configured'}")
@@ -339,4 +355,4 @@ if __name__ == '__main__':
     print("   └─ 🔗 Suspicious Links")
     print("=" * 60)
     
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=False, host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
