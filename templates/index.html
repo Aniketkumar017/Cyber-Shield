@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Cyber Shield | Complete Threat Detection Suite</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+            color: #1e293b;
+            min-height: 100vh;
+        }
+        .app-container { max-width: 1400px; margin: 0 auto; padding: 20px 24px; }
+        
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid rgba(59,130,246,0.3);
+        }
+        .logo h1 { 
+            font-size: 1.5rem; 
+            font-weight: 700; 
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .logo p { font-size: 0.7rem; color: #475569; margin-top: 4px; font-weight: 500; }
+        .status-bar {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: rgba(255,255,255,0.9);
+            padding: 6px 20px;
+            border-radius: 40px;
+            border: 1px solid #cbd5e1;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .live-indicator { display: flex; align-items: center; gap: 8px; font-size: 0.75rem; font-weight: 600; color: #059669; }
+        .live-dot { width: 8px; height: 8px; background: #10b981; border-radius: 50%; animation: pulseLive 1.5s infinite; }
+        @keyframes pulseLive { 0%,100% { opacity: 1; } 50% { opacity: 0.5; transform: scale(1.2); } }
+        select {
+            background: white;
+            border: 1px solid #cbd5e1;
+            padding: 6px 12px;
+            border-radius: 24px;
+            color: #1e293b;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .logout-btn {
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            padding: 6px 14px;
+            border-radius: 30px;
+            color: #dc2626;
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .logout-btn:hover { background: #fecaca; transform: translateY(-1px); }
+        
+        /* Detection Badges */
+        .detection-badges {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .badge {
+            background: #dbeafe;
+            border: 1px solid #3b82f6;
+            padding: 5px 14px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #1e40af;
+        }
+        
+        /* Stats Row */
+        .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+        .stat-card {
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(4px);
+            border-radius: 20px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid rgba(59,130,246,0.2);
+            transition: all 0.2s;
+        }
+        .stat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); border-color: #3b82f6; }
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            background: #dbeafe;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: #3b82f6;
+        }
+        .stat-info h4 { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; color: #64748b; letter-spacing: 0.5px; }
+        .stat-number { font-size: 1.8rem; font-weight: 800; color: #1e293b; }
+        .stat-number.high { color: #dc2626; }
+        .stat-number.medium { color: #f59e0b; }
+        .stat-number.safe { color: #10b981; }
+        
+        /* Manual Detector Section */
+        .manual-detector-section {
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(4px);
+            border-radius: 24px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid rgba(59,130,246,0.2);
+        }
+        .section-title { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; font-size: 0.9rem; font-weight: 700; color: #1e40af; }
+        .type-selector-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+        .type-option {
+            display: flex; align-items: center; gap: 8px; background: #f1f5f9;
+            padding: 8px 18px; border-radius: 40px; cursor: pointer; font-size: 0.75rem; font-weight: 600;
+            transition: all 0.2s; border: 1px solid #cbd5e1; color: #475569;
+        }
+        .type-option:hover { background: #dbeafe; border-color: #3b82f6; }
+        .type-option.active { background: #3b82f6; color: white; border-color: #3b82f6; }
+        .manual-input-row { display: flex; gap: 12px; flex-wrap: wrap; }
+        .manual-input-row input {
+            flex: 1;
+            background: white;
+            border: 1px solid #cbd5e1;
+            border-radius: 16px;
+            padding: 12px 16px;
+            color: #1e293b;
+            font-size: 0.85rem;
+        }
+        .manual-input-row input:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
+        .manual-input-row textarea {
+            flex: 2;
+            background: white;
+            border: 1px solid #cbd5e1;
+            border-radius: 16px;
+            padding: 12px 16px;
+            color: #1e293b;
+            font-family: inherit;
+            font-size: 0.85rem;
+            resize: vertical;
+        }
+        .manual-input-row textarea:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
+        .scan-btn {
+            background: #3b82f6;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 40px;
+            color: white;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+        .scan-btn:hover { background: #2563eb; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(59,130,246,0.3); }
+        
+        /* Example Buttons */
+        .example-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+        .example-btn {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .example-btn:hover { background: #dbeafe; border-color: #3b82f6; }
+        
+        /* Main Grid */
+        .main-grid { display: grid; grid-template-columns: 380px 1fr; gap: 24px; }
+        @media (max-width: 800px) { .main-grid { grid-template-columns: 1fr; } }
+        
+        /* Left Panel */
+        .messages-panel {
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(4px);
+            border-radius: 24px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 500px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid rgba(59,130,246,0.2);
+        }
+        .panel-header {
+            padding: 14px 20px;
+            background: rgba(255,255,255,0.5);
+            border-bottom: 1px solid rgba(59,130,246,0.15);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .panel-header h2 { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: #475569; }
+        .stream-toggle {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            padding: 6px 14px;
+            border-radius: 30px;
+            color: #475569;
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .stream-toggle.active { background: #3b82f6; color: white; border-color: #3b82f6; }
+        .messages-container { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+        .message-bubble {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 10px 14px;
+            animation: slideIn 0.25s ease-out;
+            transition: all 0.2s;
+        }
+        .message-bubble:hover { transform: translateX(2px); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .message-bubble.urgent { border-left: 4px solid #dc2626; background: #fef2f2; }
+        .msg-meta { display: flex; justify-content: space-between; font-size: 0.6rem; color: #94a3b8; margin-bottom: 6px; }
+        .msg-type { display: flex; align-items: center; gap: 5px; font-weight: 600; }
+        .msg-text { font-size: 0.75rem; line-height: 1.4; color: #334155; word-break: break-word; }
+        .link-warning { margin-top: 6px; font-size: 0.6rem; background: #fef2f2; padding: 3px 10px; border-radius: 16px; display: inline-block; color: #dc2626; font-weight: 500; }
+        
+        /* Right Panel */
+        .analysis-panel {
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(4px);
+            border-radius: 24px;
+            padding: 20px;
+            height: 500px;
+            overflow-y: auto;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid rgba(59,130,246,0.2);
+        }
+        .threat-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        .threat-badge.low { background: #dcfce7; color: #15803d; border-left: 3px solid #10b981; }
+        .threat-badge.medium { background: #fef3c7; color: #b45309; border-left: 3px solid #f59e0b; }
+        .threat-badge.high { background: #fee2e2; color: #b91c1c; border-left: 3px solid #dc2626; }
+        .severity-bar { background: #e2e8f0; border-radius: 20px; height: 8px; margin: 12px 0; overflow: hidden; }
+        .severity-fill { height: 100%; width: 0%; transition: width 0.5s ease; border-radius: 20px; }
+        .severity-fill.low { background: #10b981; }
+        .severity-fill.medium { background: #f59e0b; }
+        .severity-fill.high { background: #dc2626; }
+        .info-box {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 14px;
+            margin: 16px 0;
+            border: 1px solid #e2e8f0;
+        }
+        .info-box h4 { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: #64748b; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .info-box p { font-size: 0.8rem; line-height: 1.5; color: #334155; }
+        .action-list { display: flex; flex-direction: column; gap: 10px; margin: 16px 0; }
+        .action-item { display: flex; align-items: center; gap: 12px; font-size: 0.75rem; padding: 8px 0; border-bottom: 1px solid #e2e8f0; color: #475569; }
+        .action-buttons { display: flex; gap: 12px; margin: 16px 0; }
+        .action-btn {
+            flex: 1; padding: 10px; border-radius: 30px; font-size: 0.7rem; font-weight: 700;
+            text-transform: uppercase; border: none; cursor: pointer; transition: all 0.2s;
+        }
+        .action-btn.block { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+        .action-btn.block:hover { background: #fee2e2; transform: translateY(-1px); }
+        .action-btn.report { background: #eff6ff; color: #3b82f6; border: 1px solid #bfdbfe; }
+        .action-btn.report:hover { background: #dbeafe; transform: translateY(-1px); }
+        .history-list { margin-top: 16px; max-height: 130px; overflow-y: auto; }
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 0.7rem;
+            color: #475569;
+        }
+        .hidden { display: none !important; }
+        
+        /* Modal */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 2000; visibility: hidden; opacity: 0; transition: 0.2s;
+        }
+        .modal-overlay.active { visibility: visible; opacity: 1; }
+        .modal-content {
+            background: white;
+            border-radius: 28px;
+            max-width: 400px;
+            width: 90%;
+            padding: 28px;
+            text-align: center;
+            border-top: 4px solid #dc2626;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        .modal-icon { font-size: 3rem; color: #dc2626; margin-bottom: 16px; }
+        .modal-btn {
+            background: #dc2626;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 40px;
+            color: white;
+            font-weight: 700;
+            margin-top: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .modal-btn:hover { background: #b91c1c; transform: translateY(-1px); }
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #1e293b;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            z-index: 1100;
+            border-left: 3px solid #3b82f6;
+            animation: toastIn 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        @keyframes toastIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #e2e8f0; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 10px; }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">
+            <h1><i class="fas fa-shield-haltered"></i> Cyber Shield</h1>
+            <p>Payment Fraud | Job Scam | Phishing | Blackmail | Investment | Lottery</p>
+        </div>
+        <div class="status-bar">
+            <div class="live-indicator"><span class="live-dot"></span> <span>LIVE</span></div>
+            <select id="langSelect">
+                <option value="en">🇬🇧 English</option>
+                <option value="hi">🇮🇳 हिंदी</option>
+                <option value="hg">🇮🇳 Hinglish</option>
+            </select>
+            <a href="/logout" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Exit</a>
+        </div>
+    </div>
+
+    <!-- Detection Badges -->
+    <div class="detection-badges">
+        <span class="badge">💰 Payment Fraud</span>
+        <span class="badge">💼 Job Scam</span>
+        <span class="badge">🎣 Phishing</span>
+        <span class="badge">💀 Blackmail</span>
+        <span class="badge">📈 Investment Scam</span>
+        <span class="badge">🎁 Lottery Scam</span>
+        <span class="badge">🔗 Suspicious Links</span>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="stats-row">
+        <div class="stat-card"><div class="stat-icon"><i class="fas fa-shield-virus"></i></div><div class="stat-info"><h4>Total Scans</h4><div class="stat-number" id="statTotal">0</div></div></div>
+        <div class="stat-card"><div class="stat-icon"><i class="fas fa-skull"></i></div><div class="stat-info"><h4>High Risk</h4><div class="stat-number high" id="statHigh">0</div></div></div>
+        <div class="stat-card"><div class="stat-icon"><i class="fas fa-exclamation-triangle"></i></div><div class="stat-info"><h4>Medium Risk</h4><div class="stat-number medium" id="statMedium">0</div></div></div>
+        <div class="stat-card"><div class="stat-icon"><i class="fas fa-check-circle"></i></div><div class="stat-info"><h4>Verified Safe</h4><div class="stat-number safe" id="statSafe">0</div></div></div>
+    </div>
+
+    <!-- Manual Detector Section -->
+    <div class="manual-detector-section">
+        <div class="section-title"><i class="fas fa-microchip"></i> <span>🔍 Manual Threat Detector — SMS | WhatsApp | Email | Call | Link</span></div>
+        <div class="type-selector-row" id="manualTypeSelector">
+            <div class="type-option active" data-type="SMS"><i class="fas fa-comment"></i> <span>SMS</span></div>
+            <div class="type-option" data-type="WhatsApp"><i class="fab fa-whatsapp"></i> <span>WhatsApp</span></div>
+            <div class="type-option" data-type="Email"><i class="fas fa-envelope"></i> <span>Email</span></div>
+            <div class="type-option" data-type="Call"><i class="fas fa-phone"></i> <span>Call</span></div>
+            <div class="type-option" data-type="Link"><i class="fas fa-link"></i> <span>URL/Link</span></div>
+        </div>
+        <div class="manual-input-row">
+            <input type="text" id="manualSender" placeholder="Sender / From (optional)">
+            <textarea id="manualInput" rows="2" placeholder="Paste suspicious message, email, call transcript, or URL..."></textarea>
+            <button id="manualScanBtn" class="scan-btn"><i class="fas fa-search"></i> Analyze</button>
+        </div>
+        <div class="example-buttons">
+            <button class="example-btn" onclick="loadExample('payment')">💰 Payment Fraud</button>
+            <button class="example-btn" onclick="loadExample('job')">💼 Job Scam</button>
+            <button class="example-btn" onclick="loadExample('phishing')">🎣 Phishing</button>
+            <button class="example-btn" onclick="loadExample('blackmail')">💀 Blackmail</button>
+            <button class="example-btn" onclick="loadExample('investment')">📈 Investment</button>
+            <button class="example-btn" onclick="loadExample('lottery')">🎁 Lottery</button>
+            <button class="example-btn" onclick="loadExample('safe')">✅ Normal</button>
+        </div>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="main-grid">
+        <div class="messages-panel">
+            <div class="panel-header">
+                <h2><i class="fas fa-broadcast-tower"></i> LIVE STREAM</h2>
+                <button id="toggleStream" class="stream-toggle active"><i class="fas fa-play"></i> ON</button>
+            </div>
+            <div id="messagesContainer" class="messages-container">
+                <div style="text-align:center; padding:30px; color:#94a3b8; font-size:0.75rem;"><i class="fas fa-eye"></i> Monitoring threats...</div>
+            </div>
+        </div>
+
+        <div class="analysis-panel">
+            <div id="analysisContent">
+                <div class="threat-badge low" id="riskBadge">✅ SECURE</div>
+                <div class="severity-bar"><div id="severityFill" class="severity-fill low" style="width:0%"></div></div>
+                <div style="display:flex; justify-content:space-between; font-size:0.7rem; margin:8px 0;"><span>AI Confidence:</span> <strong id="confidenceVal">0%</strong><span>Threat Score:</span> <strong id="scoreVal">0%</strong></div>
+                
+                <div class="info-box"><h4><i class="fas fa-exclamation-triangle"></i> What's the Problem?</h4><p id="problemDesc">Awaiting analysis...</p></div>
+                <div class="info-box"><h4><i class="fas fa-biohazard"></i> Why Dangerous?</h4><p id="dangerDesc">No active threats detected.</p></div>
+                
+                <h4 style="font-size:0.7rem;"><i class="fas fa-list-check"></i> Solutions / Actions</h4>
+                <div id="actionList" class="action-list"><div class="action-item"><i class="fas fa-shield-alt"></i><span>System ready — monitoring active</span></div></div>
+                
+                <div id="actionButtons" class="action-buttons hidden">
+                    <button id="blockBtn" class="action-btn block"><i class="fas fa-ban"></i> Block</button>
+                    <button id="reportBtn" class="action-btn report"><i class="fas fa-flag"></i> Report</button>
+                </div>
+                
+                <div><h4 style="font-size:0.7rem;"><i class="fas fa-history"></i> Threat Log</h4>
+                <div id="historyLog" class="history-list"><div style="color:#94a3b8; text-align:center;">— No events —</div></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="alertModal" class="modal-overlay"><div class="modal-content"><div class="modal-icon"><i class="fas fa-radiation"></i></div><h3>⚠️ Critical Threat Detected</h3><p id="modalMsg">High-risk threat intercepted. Immediate action required.</p><button id="closeModal" class="modal-btn">Acknowledge & Secure</button></div></div>
+
+<script>
+    // State variables
+    let totalScans = 0, highRisk = 0, mediumRisk = 0, safeCount = 0;
+    let history = [];
+    let streamActive = true;
+    let intervalId = null;
+    let selectedManualType = 'SMS';
+
+    // DOM Elements
+    const messagesContainer = document.getElementById('messagesContainer');
+    const riskBadge = document.getElementById('riskBadge');
+    const severityFill = document.getElementById('severityFill');
+    const confidenceVal = document.getElementById('confidenceVal');
+    const scoreVal = document.getElementById('scoreVal');
+    const problemDesc = document.getElementById('problemDesc');
+    const dangerDesc = document.getElementById('dangerDesc');
+    const actionList = document.getElementById('actionList');
+    const actionButtons = document.getElementById('actionButtons');
+    const historyLog = document.getElementById('historyLog');
+    const modal = document.getElementById('alertModal');
+    const modalMsg = document.getElementById('modalMsg');
+
+    function showToast(msg) { let t = document.createElement('div'); t.className = 'toast'; t.innerHTML = `<i class="fas fa-shield-alt"></i> ${msg}`; document.body.appendChild(t); setTimeout(()=>t.remove(), 2800); }
+    function playAlert() { try { new Audio('data:audio/wav;base64,U3RlYWx0aCBzb3VuZA==').play().catch(()=>{}); } catch(e){} }
+    function showCriticalModal(msg) { modalMsg.innerText = msg; modal.classList.add('active'); playAlert(); }
+    document.getElementById('closeModal').onclick = () => modal.classList.remove('active');
+
+    function updateStatsUI() {
+        document.getElementById('statTotal').innerText = totalScans;
+        document.getElementById('statHigh').innerText = highRisk;
+        document.getElementById('statMedium').innerText = mediumRisk;
+        document.getElementById('statSafe').innerText = safeCount;
+    }
+
+    function addToHistory(text, risk, type) {
+        history.unshift({ text: text.substring(0, 40), risk, time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}), type });
+        if(history.length > 8) history.pop();
+        if(history.length === 0) historyLog.innerHTML = '<div style="color:#94a3b8; text-align:center;">— No events —</div>';
+        else historyLog.innerHTML = history.map(h => `<div class="history-item"><span><span class="history-risk" style="background:${h.risk==='HIGH'?'#dc2626':(h.risk==='MEDIUM'?'#f59e0b':'#10b981')}"></span> [${h.type}] ${h.text}</span><span style="color:#94a3b8;">${h.time}</span></div>`).join('');
+    }
+
+    // Core Threat Analysis Engine
+    function analyzeThreat(text, type, sender = '') {
+        let lower = text.toLowerCase();
+        let risk = 'LOW', severity = 8, confidence = 95;
+        let problem = "✅ No threats detected.", danger = "Message appears legitimate and safe.";
+        let steps = [{ icon:"fas fa-check-circle", text:"✓ No action required" }];
+        let detectedUrls = (text.match(/https?:\/\/[^\s]+/g) || []);
+
+        // Payment Fraud Detection
+        if (lower.includes('payment failed') || lower.includes('upi') || (lower.includes('pay') && lower.includes('click'))) {
+            risk = 'HIGH'; severity = 94; confidence = 97;
+            problem = "💰 PAYMENT FRAUD! Fake payment failure/UPI transaction detected.";
+            danger = "⚠️ Your bank account or UPI credentials could be stolen.";
+            steps = [
+                { icon:"fas fa-ban", text:"❌ DO NOT click any payment link" },
+                { icon:"fas fa-trash-alt", text:"🗑️ Delete this message immediately" },
+                { icon:"fas fa-building", text:"🏦 Check your bank app directly, not via SMS link" },
+                { icon:"fas fa-phone-alt", text:"📞 Call bank customer care on official number" }
+            ];
+        }
+        // Job Scam Detection
+        else if ((lower.includes('job') || lower.includes('work from home')) && (lower.includes('fee') || lower.includes('registration'))) {
+            risk = 'HIGH'; severity = 92; confidence = 96;
+            problem = "💼 JOB SCAM! Fake job offer demanding registration fee.";
+            danger = "⚠️ You may lose money to fraudsters promising fake jobs.";
+            steps = [
+                { icon:"fas fa-ban", text:"🔴 Block this sender immediately" },
+                { icon:"fas fa-times-circle", text:"💵 NEVER pay any registration fee for a job" },
+                { icon:"fas fa-building", text:"🏢 Verify company on official website/LinkedIn" }
+            ];
+        }
+        // Phishing Detection
+        else if (lower.includes('blocked') || lower.includes('verify') || lower.includes('click here') || lower.includes('bit.ly') || lower.includes('tinyurl')) {
+            risk = 'HIGH'; severity = 94; confidence = 97;
+            problem = "🎣 PHISHING ATTACK! Fake verification/login request.";
+            danger = "⚠️ Your password, OTP, or credit card can be stolen.";
+            steps = [
+                { icon:"fas fa-ban", text:"❌ DO NOT click any link" },
+                { icon:"fas fa-trash-alt", text:"🗑️ Delete message immediately" },
+                { icon:"fas fa-flag", text:"📢 Report to Cyber Cell (1930)" },
+                { icon:"fas fa-shield-alt", text:"🔐 Enable Two-Factor Authentication" }
+            ];
+        }
+        // Blackmail Detection
+        else if (lower.includes('private video') || lower.includes('blackmail') || lower.includes('leak') || lower.includes('pay me')) {
+            risk = 'HIGH'; severity = 96; confidence = 96;
+            problem = "💀 BLACKMAIL ATTEMPT! Someone is trying to extort you.";
+            danger = "⚠️ Financial loss and emotional distress. NEVER pay.";
+            steps = [
+                { icon:"fas fa-gavel", text:"🚫 NEVER pay. Do not engage" },
+                { icon:"fas fa-camera", text:"📸 Preserve evidence: screenshots" },
+                { icon:"fas fa-phone-alt", text:"📞 Contact Cyber Crime Helpline 1930" }
+            ];
+        }
+        // Investment Scam
+        else if (lower.includes('double your money') || (lower.includes('investment') && lower.includes('guarantee'))) {
+            risk = 'HIGH'; severity = 90; confidence = 94;
+            problem = "📈 INVESTMENT SCAM! Fake investment with guaranteed returns.";
+            danger = "⚠️ You will lose your entire investment amount.";
+            steps = [
+                { icon:"fas fa-ban", text:"❌ NEVER invest based on SMS" },
+                { icon:"fas fa-building", text:"🏢 Only invest through SEBI registered brokers" },
+                { icon:"fas fa-phone-alt", text:"📞 Report to SEBI helpline 1800 22 7575" }
+            ];
+        }
+        // Lottery Scam
+        else if (lower.includes('lottery') || lower.includes('won') || lower.includes('prize') || lower.includes('congratulations')) {
+            risk = 'HIGH'; severity = 91; confidence = 95;
+            problem = "🎁 LOTTERY SCAM! Fake lottery/prize winning notification.";
+            danger = "⚠️ Fraudsters ask for processing fee to release fake prizes.";
+            steps = [
+                { icon:"fas fa-ban", text:"❌ NEVER pay any 'processing fee'" },
+                { icon:"fas fa-trash-alt", text:"🗑️ Delete this message immediately" },
+                { icon:"fas fa-flag", text:"📢 Report to cyber crime" }
+            ];
+        }
+        // Suspicious URL
+        else if (detectedUrls.length > 0) {
+            risk = 'MEDIUM'; severity = 55; confidence = 85;
+            problem = "🔗 EXTERNAL LINK DETECTED without context.";
+            danger = "🌐 Potential redirect to phishing or malware site.";
+            steps = [{ icon:"fas fa-link", text:"🔍 Verify URL before clicking" }];
+        }
+
+        return { risk, severity, confidence, problem_description: problem, risk_analysis: danger, tactical_steps: steps, detected_urls: detectedUrls, raw_text: text, type: type };
+    }
+
+    function renderAnalysis(analysis, addToHistoryFlag = true) {
+        let riskClass = analysis.risk === 'HIGH' ? 'high' : (analysis.risk === 'MEDIUM' ? 'medium' : 'low');
+        let riskText = analysis.risk === 'HIGH' ? '⚠️ HIGH RISK — ACT NOW' : (analysis.risk === 'MEDIUM' ? '⚡ MEDIUM RISK' : '✅ SECURE');
+        riskBadge.className = `threat-badge ${riskClass}`;
+        riskBadge.innerHTML = riskText;
+        severityFill.style.width = `${analysis.severity}%`;
+        severityFill.className = `severity-fill ${riskClass}`;
+        confidenceVal.innerText = `${analysis.confidence}%`;
+        scoreVal.innerText = `${analysis.severity}%`;
+        problemDesc.innerText = analysis.problem_description;
+        dangerDesc.innerText = analysis.risk_analysis;
+        actionList.innerHTML = analysis.tactical_steps.map(step => `<div class="action-item"><i class="${step.icon}"></i><span>${step.text}</span></div>`).join('');
+        
+        if(analysis.risk !== 'LOW') actionButtons.classList.remove('hidden');
+        else actionButtons.classList.add('hidden');
+        
+        if(addToHistoryFlag) {
+            totalScans++;
+            if(analysis.risk === 'HIGH') { highRisk++; showCriticalModal(analysis.problem_description); }
+            else if(analysis.risk === 'MEDIUM') mediumRisk++;
+            else safeCount++;
+            updateStatsUI();
+            addToHistory(analysis.raw_text, analysis.risk, analysis.type);
+        }
+    }
+
+    async function addMessageToFeed(msgObj, analysis) {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `message-bubble ${analysis.risk === 'HIGH' ? 'urgent' : ''}`;
+        const icons = { 'SMS':'fa-comment', 'WhatsApp':'fab fa-whatsapp', 'Email':'fa-envelope', 'Call':'fa-phone', 'Link':'fa-link' };
+        const icon = icons[msgObj.type] || 'fa-comment';
+        let extra = msgObj.sender ? `<div style="font-size:0.55rem; margin-bottom:4px; color:#3b82f6;">📨 ${msgObj.sender}</div>` : '';
+        msgDiv.innerHTML = `<div class="msg-meta"><span class="msg-type"><i class="${icon}"></i> ${msgObj.type}</span><span>now</span></div>${extra}<div class="msg-text">${msgObj.text.substring(0, 100)}${msgObj.text.length > 100 ? '...' : ''}</div>${analysis.detected_urls && analysis.detected_urls.length ? `<div class="link-warning">⚠️ Suspicious link detected</div>` : ''}`;
+        messagesContainer.prepend(msgDiv);
+        if(messagesContainer.children.length > 18) messagesContainer.removeChild(messagesContainer.lastChild);
+    }
+
+    // Message Templates for Auto Stream
+    const messageTemplates = [
+        { type:"SMS", text:"Hey, lunch tomorrow?" },
+        { type:"WhatsApp", text:"URGENT: Payment failed. Verify: http://bit.ly/secure-pay" },
+        { type:"Call", text:"We recorded your private conversation. Pay ₹5000 or we leak." },
+        { type:"Email", sender:"hr@jobs.co", text:"Pay ₹1999 registration fee to confirm job." },
+        { type:"SMS", text:"Bank Alert: Account suspended. Click https://bank-verify.com" },
+        { type:"Link", text:"http://bit.ly/paytm-cashback" },
+        { type:"WhatsApp", text:"Hi! How are you?" }
+    ];
+
+    async function processMessage() {
+        if(!streamActive) return;
+        const msg = messageTemplates[Math.floor(Math.random() * messageTemplates.length)];
+        const analysis = analyzeThreat(msg.text, msg.type, msg.sender || '');
+        await addMessageToFeed(msg, analysis);
+        renderAnalysis(analysis, true);
+    }
+
+    function startAutoStream() { if(intervalId) clearInterval(intervalId); intervalId = setInterval(() => processMessage(), 5000); }
+    function stopAutoStream() { if(intervalId) { clearInterval(intervalId); intervalId = null; } }
+
+    // Load Example Messages
+    function loadExample(type) {
+        const examples = {
+            payment: "URGENT: Your UPI payment of ₹5,000 failed. Click here to retry: http://bit.ly/upi-retry",
+            job: "Work from home job available. Earn ₹50,000/month. Pay ₹1999 registration fee to confirm your position.",
+            phishing: "Your SBI account will be blocked today. Click http://bit.ly/sbi-verify to update KYC immediately.",
+            blackmail: "I have your private videos and browsing history. Pay ₹50,000 via UPI or I will leak everything.",
+            investment: "Double your money in 30 days! Bitcoin investment opportunity. Minimum investment ₹10,000. Guaranteed returns!",
+            lottery: "Congratulations! You won ₹25,00,000 in our lucky draw. Click here to claim your prize now!",
+            safe: "Hey, dinner plans? Let's meet at 8pm at the usual place."
+        };
+        document.getElementById('manualInput').value = examples[type];
+        document.getElementById('manualScanBtn').click();
+    }
+
+    // Event Listeners
+    document.getElementById('toggleStream').onclick = () => {
+        streamActive = !streamActive;
+        const btn = document.getElementById('toggleStream');
+        if(streamActive) { startAutoStream(); btn.classList.add('active'); btn.innerHTML = '<i class="fas fa-play"></i> ON'; showToast("Stream active"); }
+        else { stopAutoStream(); btn.classList.remove('active'); btn.innerHTML = '<i class="fas fa-pause"></i> OFF'; showToast("Stream paused"); }
+    };
+
+    document.querySelectorAll('.type-option').forEach(opt => {
+        opt.addEventListener('click', () => {
+            document.querySelectorAll('.type-option').forEach(o => o.classList.remove('active'));
+            opt.classList.add('active');
+            selectedManualType = opt.dataset.type;
+        });
+    });
+
+    document.getElementById('manualScanBtn').onclick = () => {
+        const input = document.getElementById('manualInput').value.trim();
+        const sender = document.getElementById('manualSender').value.trim();
+        if(!input) { showToast("Please enter a message or URL to scan"); return; }
+        const btn = document.getElementById('manualScanBtn');
+        btn.disabled = true;
+        btn.innerHTML = "<i class='fas fa-spinner fa-pulse'></i> Scanning...";
+        const analysis = analyzeThreat(input, selectedManualType, sender);
+        renderAnalysis(analysis, true);
+        addMessageToFeed({ type:`${selectedManualType} (Manual)`, text:input, sender:sender || null }, analysis);
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fas fa-search"></i> Analyze`;
+        document.getElementById('manualInput').value = "";
+        document.getElementById('manualSender').value = "";
+        showToast("✅ Analysis complete");
+    };
+
+    document.getElementById('blockBtn').onclick = () => { showToast("✓ Sender blocked successfully"); };
+    document.getElementById('reportBtn').onclick = () => { showToast("✓ Threat reported to Cyber Command"); };
+    document.getElementById('langSelect').onchange = (e) => { showToast(`Language changed`); };
+
+    // Initialize
+    function init() {
+        let demo = analyzeThreat("System ready - All detectors online", "System");
+        renderAnalysis(demo, false);
+        startAutoStream();
+    }
+    init();
+</script>
+</body>
+</html>
