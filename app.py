@@ -8,7 +8,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 # ============= GEMINI IMPORT (FIXED) =============
 try:
-    import google.generativeai as genai
+    # import google.generativeai as genai
     GEMINI_AVAILABLE = True
 except ImportError:
     GEMINI_AVAILABLE = False
